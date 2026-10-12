@@ -11,7 +11,7 @@
 
 ## Feature em andamento
 
-**Spec ativo:** —
+**Spec ativo:** docs/specs/2026-10-12-scaffold-turborepo.md
 **Plano ativo:** —
 
 ---
