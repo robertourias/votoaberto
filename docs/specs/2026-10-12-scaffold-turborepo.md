@@ -1,6 +1,7 @@
 # Spec & Plan: Scaffold Turborepo (web + bff) com CI
 
-**Status:** review
+**Status:** approved
+**Aprovado por:** Roberto Nicoletti em 2026-10-12
 **Data:** 2026-10-12
 **Autor:** Claude (planner) — origem: TASK01 / POL-001
 
