@@ -132,3 +132,20 @@ specs e decisions — sem escopo lê o backlog root, com escopo lê
 - Prettier + Husky + lint-staged rodam no commit
 - CI bloqueia merge se lint ou type-check falhar
 - Nunca desabilite regras de ESLint sem comentário explicando o motivo
+
+## Termos de Domínio
+
+Use estes termos de forma consistente em código, docs e conversas (fonte: `docs/context/product.md`, Domain Glossary).
+
+| Termo | Definição |
+|-------|-----------|
+| Casa | Câmara dos Deputados (CD) ou Senado Federal (SF) |
+| Votação | Evento de deliberação ligado a uma proposição e a uma sessão; tipo nominal, simbólica ou secreta |
+| Voto normalizado | Categoria padronizada do voto: Sim, Não, Abstenção, Obstrução, Presidente, Ausente ou outro; o voto original fica em campo separado |
+| Orientação | Posição indicada por partido, bloco ou liderança antes da votação |
+| Proposição | Projeto submetido ao Legislativo (PL, PLP, PEC, MP, PDL etc.), identificado por tipo, número e ano |
+| Mandato | Período de exercício de um parlamentar numa Casa e legislatura, como titular ou suplente |
+| Filiação | Vínculo de um parlamentar a um partido, com início e fim |
+| Fidelidade partidária | Percentual de votos alinhados à orientação do partido; fórmula publicada |
+| Sincronização | Cópia dos dados das APIs oficiais para o Postgres, com data da última execução registrada |
+| Fonte oficial | API ou portal da Câmara, Senado, TSE, LexML ou Planalto de onde o dado se origina |

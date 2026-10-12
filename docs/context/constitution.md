@@ -1,7 +1,5 @@
 # Constituição
 
-> **Status do arquivo:** vazio — preenchido pelo Bloco 7 do `/init-project`.
->
 > Princípios arquiteturais **não-negociáveis** deste projeto. Uma Spec que os
 > viole não deve ser aprovada; um diff que os viole não deve passar na revisão.
 >
@@ -30,18 +28,19 @@ vence convenções, que vencem preferência do agente.
 Cada princípio recebe ID `CN-XXX` para que Specs e revisões possam citá-lo.
 
 - **CN-001 — Direção das dependências.**
-  `<!-- TODO: ex. Domínio não importa framework. Dependências apontam para dentro: presentation → application → domain. Infra implementa interfaces do domínio, nunca o contrário. -->`
+  Clean Architecture. Domínio não importa framework. Dependências apontam para dentro: presentation → application → domain. Infra (Prisma, BullMQ, clientes das APIs oficiais) implementa interfaces do domínio, nunca o contrário. `packages/core` (normalização de votos, partidos e totais) é TypeScript puro, sem Nest, Next ou ORM, e é usado por worker, BFF e front.
 
 - **CN-002 — Testes junto da implementação.**
-  `<!-- TODO: ex. Comportamento novo entra com teste no mesmo diff. Bug corrigido entra com teste de regressão que falha sem o fix. -->`
+  Comportamento novo entra com teste no mesmo diff. Bug corrigido entra com teste de regressão que falha sem o fix. Normalização de votos e partidos exige cobertura ≥ 90%; fontes oficiais têm testes de contrato.
 
 - **CN-003 — Rastreabilidade.**
-  `<!-- TODO: ex. Toda decisão técnica é rastreável a um arquivo em docs/. Decisão implementada e não registrada é dívida, não pragmatismo. -->`
+  Toda decisão técnica é rastreável a um arquivo em `docs/`. Decisão implementada e não registrada é dívida, não pragmatismo.
 
 - **CN-004 — Limite de acoplamento.**
-  `<!-- TODO: ex. Módulos se comunicam por interface pública; nada de import atravessando camada interna de outro módulo. -->`
+  Apps e packages se comunicam só por interface pública (exports do package ou contrato HTTP do BFF); nenhum import atravessa camada interna de outro módulo. `apps/web` nunca acessa o Postgres nem as fontes oficiais diretamente, só o BFF (exceção temporária: Placar HTML do MVP, POL-004, até a v1). `packages/core` não depende de nenhum app.
 
-- **CN-005 — `<!-- TODO: princípio específico deste produto -->`**
+- **CN-005 — Dado oficial imutável, derivado reproduzível.**
+  O dado da fonte é gravado como veio (voto original intacto). Toda métrica derivada (voto normalizado, fidelidade, presença, concordância) é função pura em `packages/core`, com teste e fórmula publicada, e recalculável a partir do dado bruto.
 
 ---
 

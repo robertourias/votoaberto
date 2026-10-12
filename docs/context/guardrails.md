@@ -1,7 +1,5 @@
 # Guardrails
 
-> **Status do arquivo:** vazio — preenchido pelo Bloco 6 do `/init-project`.
->
 > Limites que **nenhum agente pode cruzar** neste projeto. Diferente de
 > `conventions.md` (como escrever código) e `decisions.md` (o que escolhemos),
 > este arquivo diz **o que é proibido** e **o que precisa passar antes de dizer "pronto"**.
@@ -19,11 +17,13 @@ na resposta.
 
 | Verificação | Comando | Quando rodar |
 |-------------|---------|--------------|
-| Type-check | `<!-- TODO: ex. npx tsc --noEmit -->` | toda tarefa que toca `.ts`/`.tsx` |
-| Lint | `<!-- TODO: ex. npm run lint -->` | toda tarefa que toca código |
-| Testes | `<!-- TODO: ex. npm run test -->` | toda tarefa com lógica |
-| Build | `<!-- TODO: ex. npm run build -->` | antes de release |
+| Type-check | (não configurado) | toda tarefa que toca `.ts`/`.tsx` |
+| Lint | (não configurado) | toda tarefa que toca código |
+| Testes | (não configurado) | toda tarefa com lógica |
+| Build | (não configurado) | antes de release |
 
+> ⚠️ Projeto ainda sem código: todos os comandos estão `(não configurado)` até POL-001 (scaffold Turborepo). Atualize esta tabela nessa tarefa — antes disso, Critérios de Aceite viram autodeclaração.
+>
 > Se um comando ainda não existe no projeto, escreva `(não configurado)` —
 > nunca invente um comando que não roda.
 
@@ -38,15 +38,17 @@ continua sendo a definição de "pronto" que o agente precisa satisfazer e
 
 Nunca editar sem pedido explícito do humano:
 
-- `<!-- TODO: ex. migrations já aplicadas em produção -->`
-- `<!-- TODO: ex. .github/workflows/ -->`
-- `<!-- TODO: ex. infra/terraform/ -->`
+- migrations já aplicadas em produção (`**/prisma/migrations/**` ou equivalente, após o 1º deploy)
+- `.github/workflows/` (CI e deploy)
+- `infra/` e arquivos de deploy da VPS (`docker-compose*.yml`, configuração do Traefik)
 
 Nunca ler, nunca imprimir no chat, nunca commitar:
 
 - `.env` e variantes (exceto `.env.example`)
 - chaves privadas (`*.pem`, `*.key`, `id_rsa*`)
-- `<!-- TODO: outros caminhos de segredo deste projeto -->`
+- `~/.ssh/**` e credenciais SSH da VPS
+- `deploy/**/*.key`
+- credenciais do MinIO/S3 (`**/minio*.env`, `**/s3-credentials*`) e `**/secrets/**`
 
 ---
 
@@ -59,7 +61,8 @@ porque a lista de permissões não cobre todo caminho possível:
 - reset/drop de banco fora de ambiente local descartável (ex: `prisma migrate reset`)
 - `npm publish` e equivalentes
 - desabilitar hook de commit (`--no-verify`) ou regra de lint sem comentário justificando
-- `<!-- TODO: operações específicas deste produto -->`
+- `docker compose down`/remoção de volumes na VPS de produção; `docker system prune`
+- apagar ou sobrescrever registros de votação já gravados sem reprocessar a partir da fonte oficial
 
 ---
 
@@ -68,8 +71,15 @@ porque a lista de permissões não cobre todo caminho possível:
 Regras cuja violação corrompe dados ou quebra contrato com o usuário.
 Fonte: `docs/context/product.md` / `docs/context/domains/`.
 
-- **GR-001:** `<!-- TODO: ex. invoice nunca é deletada, apenas anulada -->`
-- **GR-002:** `<!-- TODO: ex. valor monetário sempre em inteiro de centavos, nunca float -->`
+- **GR-001 (fonte oficial):** todo dado, número e voto exibido leva à fonte oficial; link de fonte em 100% das fichas e votações.
+- **GR-002 (neutralidade):** nenhum texto ou UI recomenda voto, classifica parlamentar como bom/ruim, usa adjetivo valorativo ou trata partidos de forma desigual.
+- **GR-003 (rastreabilidade):** todo registro guarda id original da fonte, URL de origem e data da última sincronização.
+- **GR-004 (voto na data):** voto guarda partido e UF da data da votação; o voto original é preservado ao lado do normalizado.
+- **GR-005 (sem voto inventado):** votação simbólica não tem voto individual e votação secreta do Senado só tem totais; nunca fabricar voto individual.
+- **GR-006 (método público):** fidelidade, presença e concordância só são exibidos com a fórmula publicada em "Sobre os dados".
+- **GR-007 (só dado público):** apenas dados públicos de agentes políticos; analytics sem cookies de rastreamento.
+- **GR-008 (resiliência):** falha de API oficial não derruba o site; serve o último dado gravado e avisa o atraso.
+- **GR-009 (ingestão idempotente):** rodar a ingestão duas vezes não duplica registros; nunca apagar votação já gravada sem reprocessar da fonte.
 
 > Toda regra recebe ID para que Specs e Critérios de Aceite possam citá-la
 > (`Cobre: GR-001`).
@@ -85,7 +95,11 @@ Pare a execução e pergunte antes de prosseguir quando a tarefa envolver:
 - breaking change em contrato de API já publicado
 - nova dependência de runtime ou serviço externo
 - qualquer coisa que mova dinheiro ou exponha dado pessoal
-- `<!-- TODO: gatilhos específicos deste produto -->`
+- texto editorial (guias, glossário, qualquer copy que descreva partido ou parlamentar) — exige checklist de neutralidade
+- fórmula de cálculo exibida (fidelidade, presença, concordância)
+- nova fonte de dados externa, ou mudança de endpoint/janela de uma fonte oficial
+- contas de usuário (POL-037) ou qualquer coleta de dado do visitante
+- deploy ou alteração na VPS de produção (Compose, Traefik)
 
 ---
 

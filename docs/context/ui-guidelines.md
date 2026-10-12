@@ -1,24 +1,25 @@
 # UI Guidelines
 
-> Decisões de design system e padrões de componentes para o frontend. Preencha as seções `<!-- TODO -->` com suas escolhas reais — quanto mais específico, menos o agente vai inventar.
+> Decisões de design system e padrões de componentes para o frontend. Em monorepo, escolhas por app (biblioteca de componentes, estilização, ícones) são definidas por `/init-app` e `/init-package`; aqui ficam só os tokens compartilhados.
 
 ## Design System
 
-**Component library**: <!-- TODO: ex: "shadcn/ui sobre Radix UI — sem MUI, sem Chakra" -->
-**Styling solution**: <!-- TODO: ex: "Tailwind CSS — sem CSS Modules, sem styled-components" -->
-**Icon library**: <!-- TODO: ex: "Lucide React — sem Heroicons" -->
-**Design tokens source**: <!-- TODO: ex: "Figma / tokens.css na raiz do packages/ui" -->
+**Component library**: <!-- definido por app -->
+**Styling solution**: <!-- definido por app -->
+**Icon library**: <!-- definido por app -->
+**Design tokens source**: design system Nocturne (pacote compartilhado de UI no monorepo: AppShell, DataTable, StatCard); valores de cores e fontes <!-- a definir -->
 
 ## Color Tokens
 
 Use variáveis semânticas — nunca valores hex diretos em componentes.
 
-<!-- TODO: preencha com seus tokens reais -->
+<!-- a definir: valores reais dos tokens (Nocturne); temas claro e escuro obrigatórios -->
 ```css
 --color-primary        /* cor principal da marca, com variantes hover e active */
 --color-success / --color-warning / --color-error / --color-info
 --color-text-primary / --color-text-secondary / --color-text-disabled
 --color-border / --color-background / --color-surface
+--color-vote-sim / -nao / -abstencao / -obstrucao / -presidente / -ausente  /* categorias de voto do Placar; sempre acompanhadas de texto ou ícone */
 ```
 
 Dark mode: todas as cores devem suportar dark mode via CSS variables ou classes `dark:` do Tailwind. Contraste mínimo: 4.5:1 para texto normal, 3:1 para texto grande.
@@ -32,7 +33,7 @@ Dark mode: todas as cores devem suportar dark mode via CSS variables ou classes 
 
 ## Tipografia
 
-<!-- TODO: preencha com suas fontes reais -->
+<!-- a definir: fontes (Nocturne) -->
 ```
 Headings: [Fonte], pesos 600/700
 Body:     [Fonte], pesos 400/500

@@ -6,6 +6,8 @@ Registradas aqui para que agentes não inventem convenções não acordadas.
 ## Backend
 
 ### Arquitetura
+- **BFF em NestJS** é o único ponto de contato com as APIs externas (Câmara, Senado e demais fontes oficiais): nenhum app consome fonte externa diretamente. Exceção temporária: o Placar publicado como HTML no MVP (POL-004), até a v1
+- Dados externos são copiados para o Postgres por jobs de ingestão (worker NestJS); o BFF serve as páginas lendo do Postgres, não das APIs das Casas em tempo real
 - Clean Architecture com limites de camada estritos
 - DI baseado em tokens: `{ provide: IUsersRepository, useClass: TypeOrmUsersRepository }`
 - Entidades de domínio: classes TypeScript puras — zero imports NestJS
@@ -13,27 +15,30 @@ Registradas aqui para que agentes não inventem convenções não acordadas.
 
 ### ORM e banco
 - `synchronize: false` em produção — migrations obrigatórias para toda mudança de schema
-- <!-- a definir: ORM específico (TypeORM / Prisma / Drizzle) -->
-- <!-- a definir: banco de dados (PostgreSQL / MySQL) -->
+- ORM: <!-- definido por app -->
+- Banco: PostgreSQL (Postgres central da VPS, schema próprio do produto) — migrations obrigatórias
 
 ### API
 - REST com Swagger (`@nestjs/swagger`)
 - Versionamento via prefixo: `/api/v1/`
 - Paginação cursor-based preferida sobre offset em tabelas grandes
+- API pública de leitura: rate limit de 60 req/min por IP e OpenAPI publicada
 
 ### Erros e logs
 - Filtro global de exceções para erros inesperados — shape consistente de resposta
 - Log sempre com contexto: `this.logger.error('msg', { entityId, error })`
+- Ingestão: idempotente (rodar duas vezes não duplica registros); falha de uma fonte não bloqueia as outras; retry com backoff; toda execução registra início, fim, itens e erro
+- Testes de contrato diários contra uma votação conhecida de cada fonte
 
 ### Fila
 - Operações pesadas (email, PDF, imagem) vão para fila — nunca bloqueiam HTTP
-- <!-- a definir: solução de fila (BullMQ / SQS / EventEmitter2) -->
+- Solução de fila: <!-- definido por app -->
 
 ### Auth
-- <!-- a definir: solução de autenticação (JWT+Passport / Clerk / Auth0) -->
+- <!-- definido por app --> (sem contas de usuário no escopo atual)
 
 ### Cache
-- <!-- a definir: solução de cache (Redis / sem cache) -->
+- <!-- definido por app -->
 
 ### Testes backend
 - Unit: Jest com interfaces de repositório mockadas
@@ -44,6 +49,10 @@ Registradas aqui para que agentes não inventem convenções não acordadas.
 
 ## Frontend
 
+### Design system e tokens
+- Fonte dos tokens: design system **Nocturne** (pacote compartilhado de UI: AppShell, DataTable, StatCard), com tema claro e escuro; valores de cores e fontes <!-- a definir -->
+- Categorias de voto (Sim, Não, Abstenção, Obstrução, Presidente, Ausente) nunca distinguidas só por cor
+
 ### Renderização
 - App Router (Next.js) — sem Pages Router
 - Server Components por padrão; `'use client'` apenas para interatividade ou browser APIs
@@ -51,22 +60,22 @@ Registradas aqui para que agentes não inventem convenções não acordadas.
 - Dados em Server Components sempre que possível — evitar `useEffect` para fetch
 
 ### Estilização
-- <!-- a definir: ex: "Tailwind CSS — sem CSS Modules, sem styled-components" -->
+- <!-- definido por app -->
 
 ### Componentes
-- <!-- a definir: ex: "shadcn/ui sobre Radix UI — sem MUI, sem Chakra" -->
+- <!-- definido por app -->
 
 ### Estado global
-- <!-- a definir: ex: "Zustand — sem Redux, sem Jotai" -->
+- <!-- definido por app -->
 
 ### Formulários
-- <!-- a definir: ex: "React Hook Form + Zod — sem Formik" -->
+- <!-- definido por app -->
 
 ### Data fetching no cliente
-- <!-- a definir: ex: "TanStack Query — sem SWR" -->
+- <!-- definido por app -->
 
 ### Ícones
-- <!-- a definir: ex: "Lucide React" -->
+- <!-- definido por app -->
 
 ### Testes frontend
 - React Testing Library + Jest — sem Enzyme
