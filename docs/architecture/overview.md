@@ -31,6 +31,7 @@
 
 | Path | Tipo | Propósito | Stack (se diferir da tabela acima) | Docs próprios |
 |------|------|-----------|--------------------------------------|---------------|
+| `apps/web` | app (web) | Site público: guias, glossário, ferramentas e fichas, lendo só do BFF | Tailwind CSS, Nocturne + Radix, TanStack Query (client); porta 3400 | `docs/apps/web/README.md` |
 
 Cada app/package ganha `docs/apps/[nome]/` (ou `docs/packages/[nome]/`),
 com seu `README.md` de índice, criado por `/init-app` e `/init-package`;
