@@ -113,17 +113,17 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Agente:** backend
 - **Depende de:** T2
 - **Paralelizável com:** nenhuma
-- **Arquivos:** `apps/bff/package.json`, `apps/bff/tsconfig.json`, `apps/bff/tsconfig.build.json`, `apps/bff/nest-cli.json`, `apps/bff/eslint.config.mjs`, `apps/bff/jest.config.ts`, `apps/bff/test/jest-e2e.json`, `apps/bff/src/main.ts`, `apps/bff/src/app.module.ts`, `apps/bff/src/presentation/health/health.controller.ts`, `apps/bff/src/presentation/health/health.controller.spec.ts`, `apps/bff/src/presentation/filters/all-exceptions.filter.ts`, `apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts`, `apps/bff/test/health.e2e-spec.ts`, `pnpm-lock.yaml`
+- **Arquivos:** `apps/bff/package.json`, `apps/bff/tsconfig.json`, `apps/bff/tsconfig.build.json`, `apps/bff/nest-cli.json`, `apps/bff/eslint.config.mjs`, `apps/bff/jest.config.ts`, `apps/bff/test/jest-e2e.json`, `apps/bff/src/main.ts`, `apps/bff/src/app.module.ts`, `apps/bff/src/presentation/health/health.controller.ts`, `apps/bff/src/presentation/health/health.controller.spec.ts`, `apps/bff/src/presentation/filters/all-exceptions.filter.ts`, `apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts`, `apps/bff/test/health.e2e-spec.ts`, `apps/bff/src/bootstrap.ts`, `docs/apps/bff/context/decisions.md`, `pnpm-lock.yaml`
 - **Cobre:** FR-003, FR-005, FR-006 (porta), CN-001, CN-002
 - **Descrição:** App NestJS `@votoaberto/bff` consumindo `@votoaberto/config`. `main.ts`: `PORT` (default 3401), `setGlobalPrefix('api/v1')`, Swagger em `/api/docs`, `AllExceptionsFilter` global. `HealthController` com `GET /health`. Scripts `dev`, `build`, `lint`, `type-check`, `test`, `test:e2e`. Testes escritos junto (CN-002). Sem banco, Redis, fila ou auth.
 - **Critérios de Aceite:**
-  - [ ] Dado o BFF no ar, quando chamo `GET /api/v1/health`, então recebe `200` e `{"status":"ok"}`. — cobre FR-003, verificado por `pnpm --filter @votoaberto/bff test:e2e` (`apps/bff/test/health.e2e-spec.ts`)
-  - [ ] Dado uma rota inexistente, quando chamo `GET /api/v1/nao-existe`, então recebe `404` com o shape `{statusCode,error,message,path,timestamp}`. — cobre FR-003, verificado por `apps/bff/test/health.e2e-spec.ts`
-  - [ ] Dado uma exceção não tratada no handler, quando o filtro a captura, então responde `500` com `message` genérica e sem stack trace. — cobre FR-003, verificado por `apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts`
-  - [ ] Dado o BFF no ar, quando abro `GET /api/docs`, então responde `200` com a UI do Swagger. — cobre FR-003, verificado por `apps/bff/test/health.e2e-spec.ts`
-  - [ ] Dado `PORT` ausente, quando subo o app, então escuta em 3401. — cobre FR-003, verificado por `pnpm --filter @votoaberto/bff dev` e `curl -s localhost:3401/api/v1/health`
-  - [ ] Dado o app, quando rodo `pnpm --filter @votoaberto/bff type-check`, `lint`, `test` e `build`, então todos passam. — cobre FR-005, verificado por esses comandos
-  - [ ] Dado o workspace com o `bff`, quando rodo `pnpm exec turbo run build --dry=json`, então lista a tarefa `build` de `@votoaberto/bff`. — cobre FR-001, verificado por `pnpm exec turbo run build --dry=json`
+  - [x] Dado o BFF no ar, quando chamo `GET /api/v1/health`, então recebe `200` e `{"status":"ok"}`. — cobre FR-003, verificado por `pnpm --filter @votoaberto/bff test:e2e` (`apps/bff/test/health.e2e-spec.ts`)
+  - [x] Dado uma rota inexistente, quando chamo `GET /api/v1/nao-existe`, então recebe `404` com o shape `{statusCode,error,message,path,timestamp}`. — cobre FR-003, verificado por `apps/bff/test/health.e2e-spec.ts`
+  - [x] Dado uma exceção não tratada no handler, quando o filtro a captura, então responde `500` com `message` genérica e sem stack trace. — cobre FR-003, verificado por `apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts`
+  - [x] Dado o BFF no ar, quando abro `GET /api/docs`, então responde `200` com a UI do Swagger. — cobre FR-003, verificado por `apps/bff/test/health.e2e-spec.ts`
+  - [x] Dado `PORT` ausente, quando subo o app, então escuta em 3401. — cobre FR-003, verificado por `pnpm --filter @votoaberto/bff dev` e `curl -s localhost:3401/api/v1/health`
+  - [x] Dado o app, quando rodo `pnpm --filter @votoaberto/bff type-check`, `lint`, `test` e `build`, então todos passam. — cobre FR-005, verificado por esses comandos
+  - [x] Dado o workspace com o `bff`, quando rodo `pnpm exec turbo run build --dry=json`, então lista a tarefa `build` de `@votoaberto/bff`. — cobre FR-001, verificado por `pnpm exec turbo run build --dry=json`
 
 ### Tarefa 4: apps/web (Next.js)
 - **Tipo:** feature
@@ -228,6 +228,11 @@ no formato `- [onda N] arquivo:linha — texto`. Não é normativo. -->
 - [onda 2] packages/config/package.json:peerDependencies — `eslint: "^9.0.0"` é frouxo; `defineConfig`/`globalIgnores` (`eslint/config`) exigem ESLint ≥ 9.22; ajustar para `^9.22.0`
 - [onda 2] packages/config/tsconfig/nestjs.json — `module`/`moduleResolution: node16` exige que `apps/bff` não declare `"type": "module"`; confirmar no build da T3
 - [onda 2] packages/config/eslint/nextjs.mjs — preset Next não validado (precisa de `next` instalado); validar com `lint` na T4
+- [onda 3] apps/bff/tsconfig.json:4-9 — `baseUrl: "./"` sem uso e `incremental` junto de `noEmit`; funciona, limpar quando conveniente
+- [onda 3] apps/bff/package.json — `ts-node` existe só para ler `jest.config.ts`; intencional
+- [onda 3] apps/bff/test/health.e2e-spec.ts — e2e não exercita um 5xx real via HTTP; cobertura do 5xx fica no spec unitário do filtro
+- [onda 3] apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts:45 — regex `at.*\.ts` frouxa; a checagem de `segredo|senha` cobre o vazamento relevante
+- [onda 3] NestJS 11 (não 12, ESM-only): migrar ao 12 exige trocar o tsconfig nestjs para node20/nodenext ou tornar o BFF ESM; decisão humana (registrada em docs/apps/bff/context/decisions.md)
 
 ---
 
@@ -239,6 +244,7 @@ FR novo ou removido não é emenda: pare e escale ao humano. -->
 
 - 2026-10-12 — T2 passa a registrar `packages/config` (linha em `overview.md` e `docs/packages/config/README.md`), com arquivos e critério novos; premissa de `/init-package config` prévio removida — `/hands-on` iniciado sem o registro; humano escolheu registrar dentro da T2 — Roberto Nicoletti
 - 2026-10-12 — Critério 2 de T1 verifica as tasks lendo `turbo.json`; a listagem real via `turbo run build --dry=json` vira critério novo de T3 — `--dry` não lista tarefas sem workspaces; achado 🟡 da review da onda 1 — Roberto Nicoletti (via /hands-on)
+- 2026-10-12 — T3 passa a incluir `apps/bff/src/bootstrap.ts` (configureApp compartilhado por `main.ts` e e2e) e `docs/apps/bff/context/decisions.md` (decisões técnicas da T3) — achados 🟡 da review da onda 3 — Roberto Nicoletti (via /hands-on)
 
 ---
 
