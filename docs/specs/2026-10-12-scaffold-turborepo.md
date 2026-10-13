@@ -42,7 +42,7 @@ Esta Spec cria o esqueleto executável do monorepo: Turborepo com pnpm, `apps/we
 ## 4. Fora do Escopo & Riscos
 
 - **Fora do Escopo:** `packages/core`, `packages/ui` e `apps/worker` (TASK04, TASK03, TASK05); Dockerfile, Compose, Traefik e deploy (TASK02); Prisma, Postgres, Redis e qualquer lógica de dados; shell Nocturne e design tokens (TASK03); Playwright/E2E de navegador (TASK11); Placar e conteúdo de produto.
-- **Premissa:** repositório GitHub remoto existe para o CI rodar; `packages/config` será registrado em `docs/architecture/overview.md` e ganhará `docs/packages/config/` via `/init-package config` **antes** de `/hands-on` (CN-003). Versões de Next.js, NestJS e demais dependências são as estáveis atuais, fixadas na instalação e conferidas na documentação oficial (Context7) pelos agentes.
+- **Premissa:** repositório GitHub remoto existe para o CI rodar (`origin`: robertourias/votoaberto). O registro de `packages/config` na documentação (CN-003) é feito pela T2 (ver Emendas). Versões de Next.js, NestJS e demais dependências são as estáveis atuais, fixadas na instalação e conferidas na documentação oficial (Context7) pelos agentes.
 - **Premissa:** o time autoriza, ao aprovar esta Spec, as novas dependências de runtime/dev do scaffold (gatilho de escalação do guardrails: nova dependência).
 - **Risco:** desenvolvimento em Windows gera CRLF e quebra Prettier/lint no CI (Linux) → Mitigação: `.gitattributes` com `eol=lf`, `endOfLine: "lf"` no Prettier e critério de CI verde.
 - **Risco:** duas tarefas rodando `pnpm install` em paralelo corrompem lockfile e `node_modules` → Mitigação: instalações serializadas por onda (ver plano; `web` e `bff` não são paralelos).
@@ -98,13 +98,14 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Agente:** backend
 - **Depende de:** T1
 - **Paralelizável com:** nenhuma
-- **Arquivos:** `packages/config/package.json`, `packages/config/tsconfig/base.json`, `packages/config/tsconfig/nestjs.json`, `packages/config/tsconfig/nextjs.json`, `packages/config/eslint/base.mjs`, `packages/config/eslint/nestjs.mjs`, `packages/config/eslint/nextjs.mjs`, `packages/config/prettier/index.mjs`, `.prettierignore`, `pnpm-lock.yaml`
-- **Cobre:** FR-002, FR-007 (Prettier LF), CN-004
-- **Descrição:** Package `@votoaberto/config` (privado) exportando tsconfigs (base estrito `strict: true`, variantes Nest e Next), ESLint flat config (TypeScript, regra de não desabilitar sem justificativa, base + Nest + Next) e Prettier (`endOfLine: "lf"`). Só configuração; sem código de produto e sem depender de nenhum app (CN-004).
+- **Arquivos:** `packages/config/package.json`, `packages/config/tsconfig/base.json`, `packages/config/tsconfig/nestjs.json`, `packages/config/tsconfig/nextjs.json`, `packages/config/eslint/base.mjs`, `packages/config/eslint/nestjs.mjs`, `packages/config/eslint/nextjs.mjs`, `packages/config/prettier/index.mjs`, `.prettierignore`, `pnpm-lock.yaml`, `docs/architecture/overview.md`, `docs/packages/config/README.md`
+- **Cobre:** FR-002, FR-007 (Prettier LF), CN-003, CN-004
+- **Descrição:** Package `@votoaberto/config` (privado) exportando tsconfigs (base estrito `strict: true`, variantes Nest e Next), ESLint flat config (TypeScript, regra de não desabilitar sem justificativa, base + Nest + Next) e Prettier (`endOfLine: "lf"`). Só configuração; sem código de produto e sem depender de nenhum app (CN-004). Registra o package (CN-003): linha em "Projetos do Monorepo" de `docs/architecture/overview.md` (`packages/config` | package compartilhado | tsconfig, ESLint e Prettier compartilhados | `docs/packages/config/README.md`) e `docs/packages/config/README.md` pelo template mínimo de `conventions.md`.
 - **Critérios de Aceite:**
   - [ ] Dado o package, quando rodo `pnpm --filter @votoaberto/config exec prettier --check .`, então não há arquivo fora do padrão. — cobre FR-002, verificado por esse comando
   - [ ] Dado `tsconfig/base.json`, quando inspeciono, então contém `"strict": true`. — cobre FR-002, verificado por `grep -n '"strict": true' packages/config/tsconfig/base.json`
   - [ ] Dado o Prettier compartilhado, quando consulto a config, então `endOfLine` é `lf`. — cobre FR-007, verificado por `pnpm --filter @votoaberto/config exec prettier --find-config-path packages/config/prettier/index.mjs` e leitura do arquivo
+  - [ ] Dado o registro do package, quando leio `docs/architecture/overview.md`, então a tabela "Projetos do Monorepo" tem a linha de `packages/config` e `docs/packages/config/README.md` existe. — cobre CN-003, verificado por `grep -n "packages/config" docs/architecture/overview.md` e `ls docs/packages/config/README.md`
   - [ ] Dado `packages/config/package.json`, quando listo dependências, então não referencia `apps/*`. — cobre CN-004, verificado por `grep -c "apps/" packages/config/package.json` retornando 0
 
 ### Tarefa 3: apps/bff (NestJS)
@@ -227,6 +228,8 @@ no formato `- [onda N] arquivo:linha — texto`. Não é normativo. -->
 <!-- Mudança normativa depois da aprovação (FR, tarefa, contrato, critério).
 Formato: `- YYYY-MM-DD — <o que mudou> — <por quê> — <quem>`.
 FR novo ou removido não é emenda: pare e escale ao humano. -->
+
+- 2026-10-12 — T2 passa a registrar `packages/config` (linha em `overview.md` e `docs/packages/config/README.md`), com arquivos e critério novos; premissa de `/init-package config` prévio removida — `/hands-on` iniciado sem o registro; humano escolheu registrar dentro da T2 — Roberto Nicoletti
 
 ---
 
