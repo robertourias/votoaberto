@@ -102,11 +102,11 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Cobre:** FR-002, FR-007 (Prettier LF), CN-003, CN-004
 - **Descrição:** Package `@votoaberto/config` (privado) exportando tsconfigs (base estrito `strict: true`, variantes Nest e Next), ESLint flat config (TypeScript, regra de não desabilitar sem justificativa, base + Nest + Next) e Prettier (`endOfLine: "lf"`). Só configuração; sem código de produto e sem depender de nenhum app (CN-004). Registra o package (CN-003): linha em "Projetos do Monorepo" de `docs/architecture/overview.md` (`packages/config` | package compartilhado | tsconfig, ESLint e Prettier compartilhados | `docs/packages/config/README.md`) e `docs/packages/config/README.md` pelo template mínimo de `conventions.md`.
 - **Critérios de Aceite:**
-  - [ ] Dado o package, quando rodo `pnpm --filter @votoaberto/config exec prettier --check .`, então não há arquivo fora do padrão. — cobre FR-002, verificado por esse comando
-  - [ ] Dado `tsconfig/base.json`, quando inspeciono, então contém `"strict": true`. — cobre FR-002, verificado por `grep -n '"strict": true' packages/config/tsconfig/base.json`
-  - [ ] Dado o Prettier compartilhado, quando consulto a config, então `endOfLine` é `lf`. — cobre FR-007, verificado por `pnpm --filter @votoaberto/config exec prettier --find-config-path packages/config/prettier/index.mjs` e leitura do arquivo
-  - [ ] Dado o registro do package, quando leio `docs/architecture/overview.md`, então a tabela "Projetos do Monorepo" tem a linha de `packages/config` e `docs/packages/config/README.md` existe. — cobre CN-003, verificado por `grep -n "packages/config" docs/architecture/overview.md` e `ls docs/packages/config/README.md`
-  - [ ] Dado `packages/config/package.json`, quando listo dependências, então não referencia `apps/*`. — cobre CN-004, verificado por `grep -c "apps/" packages/config/package.json` retornando 0
+  - [x] Dado o package, quando rodo `pnpm --filter @votoaberto/config exec prettier --check .`, então não há arquivo fora do padrão. — cobre FR-002, verificado por esse comando
+  - [x] Dado `tsconfig/base.json`, quando inspeciono, então contém `"strict": true`. — cobre FR-002, verificado por `grep -n '"strict": true' packages/config/tsconfig/base.json`
+  - [x] Dado o Prettier compartilhado, quando consulto a config, então `endOfLine` é `lf`. — cobre FR-007, verificado por `pnpm --filter @votoaberto/config exec prettier --find-config-path packages/config/prettier/index.mjs` e leitura do arquivo
+  - [x] Dado o registro do package, quando leio `docs/architecture/overview.md`, então a tabela "Projetos do Monorepo" tem a linha de `packages/config` e `docs/packages/config/README.md` existe. — cobre CN-003, verificado por `grep -n "packages/config" docs/architecture/overview.md` e `ls docs/packages/config/README.md`
+  - [x] Dado `packages/config/package.json`, quando listo dependências, então não referencia `apps/*`. — cobre CN-004, verificado por `grep -c "apps/" packages/config/package.json` retornando 0
 
 ### Tarefa 3: apps/bff (NestJS)
 - **Tipo:** feature
@@ -225,6 +225,9 @@ no formato `- [onda N] arquivo:linha — texto`. Não é normativo. -->
 - [onda 1] `.env.example:5` — `BFF_URL` basta (web usa Server Components); acrescentar `NEXT_PUBLIC_BFF_URL` só se código de browser chamar o BFF
 - [onda 1] `turbo.json` — `test` depende de `^build`; `lint`/`type-check` dependem de `^lint`/`^type-check` (só têm efeito com dependências entre workspaces)
 - [onda 1] raiz — `turbo` pode recriar `AGENTS.md` em instalações futuras; não declarado na Spec, não commitar
+- [onda 2] packages/config/package.json:peerDependencies — `eslint: "^9.0.0"` é frouxo; `defineConfig`/`globalIgnores` (`eslint/config`) exigem ESLint ≥ 9.22; ajustar para `^9.22.0`
+- [onda 2] packages/config/tsconfig/nestjs.json — `module`/`moduleResolution: node16` exige que `apps/bff` não declare `"type": "module"`; confirmar no build da T3
+- [onda 2] packages/config/eslint/nextjs.mjs — preset Next não validado (precisa de `next` instalado); validar com `lint` na T4
 
 ---
 
