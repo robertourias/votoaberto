@@ -22,7 +22,7 @@
 
 | ID | Título | Descrição | Projetos | Status | Dependências | Spec |
 |----|--------|-----------|----------|--------|---------------|------|
-| TASK01 | Scaffold Turborepo (web + bff) com CI | POL-001. Cria apps web e bff no Turborepo; CI com type-check, lint, test e build; README com comandos; preenche os comandos de verificação em guardrails.md. | web, bff | backlog | — | — |
+| TASK01 | Scaffold Turborepo (web + bff) com CI | POL-001. Cria apps web e bff no Turborepo; CI com type-check, lint, test e build; README com comandos; preenche os comandos de verificação em guardrails.md. | web, bff | in-progress | — | `docs/specs/2026-10-12-scaffold-turborepo.md` |
 | TASK02 | Ambiente na VPS | POL-002. Compose em /opt/docker/votoaberto/, Traefik, subdomínio, schema no Postgres central, deploy automático na main, HTTPS, healthcheck no Uptime Kuma. | web, bff | backlog | TASK01 | — |
 | TASK03 | Shell do site com Nocturne | POL-003. Cabeçalho, menu dos módulos, rodapé com fontes, tema claro e escuro; navegável por teclado; sem rolagem lateral em 360 px. | web, ui | backlog | TASK01 | — |
 | TASK04 | Pacote core de normalização | POL-017. Normalização de votos, partidos e totais em TypeScript puro; cobertura ≥ 90%; usado por worker, BFF e web. | core | backlog | TASK01 | — |

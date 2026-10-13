@@ -1,0 +1,11 @@
+{
+  "extends": "@votoaberto/config/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "isolatedModules": true,
+    "types": ["node", "jest"]
+  },
+  "include": ["src/**/*", "test/**/*", "jest.config.ts"]
+}

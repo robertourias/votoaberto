@@ -17,13 +17,11 @@ na resposta.
 
 | Verificação | Comando | Quando rodar |
 |-------------|---------|--------------|
-| Type-check | (não configurado) | toda tarefa que toca `.ts`/`.tsx` |
-| Lint | (não configurado) | toda tarefa que toca código |
-| Testes | (não configurado) | toda tarefa com lógica |
-| Build | (não configurado) | antes de release |
+| Type-check | `pnpm type-check` | toda tarefa que toca `.ts`/`.tsx` |
+| Lint | `pnpm lint` | toda tarefa que toca código |
+| Testes | `pnpm test` | toda tarefa com lógica |
+| Build | `pnpm build` | antes de release |
 
-> ⚠️ Projeto ainda sem código: todos os comandos estão `(não configurado)` até POL-001 (scaffold Turborepo). Atualize esta tabela nessa tarefa — antes disso, Critérios de Aceite viram autodeclaração.
->
 > Se um comando ainda não existe no projeto, escreva `(não configurado)` —
 > nunca invente um comando que não roda.
 
