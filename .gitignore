@@ -1,0 +1,10 @@
+node_modules/
+.next/
+dist/
+.turbo/
+coverage/
+*.tsbuildinfo
+
+# env: só o .env.example é versionado
+.env*
+!.env.example

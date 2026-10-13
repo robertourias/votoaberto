@@ -88,10 +88,10 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Cobre:** FR-001, FR-007 (LF), FR-009 (`.env.example`), CN-003
 - **Descrição:** Cria o workspace pnpm + Turborepo (nome `votoaberto`, `private: true`), fixa `packageManager` e Node LTS, define os scripts raiz (`dev`, `build`, `lint`, `type-check`, `test`) delegando ao `turbo`, `.gitignore` (node_modules, `.next`, `dist`, `.turbo`, `.env*` exceto `.env.example`, coverage), `.gitattributes` com `* text=auto eol=lf`, e `.env.example` com `PORT` do BFF (3401) e `NEXT_PUBLIC_BFF_URL`/`BFF_URL` (http://localhost:3401). Não toca `.claude/` nem `docs/`.
 - **Critérios de Aceite:**
-  - [ ] Dado o repositório limpo, quando rodo `pnpm install`, então conclui sem erro e gera `pnpm-lock.yaml`. — cobre FR-001, verificado por `pnpm install`
-  - [ ] Dado `turbo.json`, quando rodo `pnpm exec turbo run build --dry=json`, então lista as tarefas `build`, `dev`, `lint`, `type-check` e `test` configuradas. — cobre FR-001, verificado por `pnpm exec turbo run build --dry=json`
-  - [ ] Dado `.gitignore`, quando crio `.env` e `.env.example`, então `git check-ignore .env` retorna o caminho e `git check-ignore .env.example` não retorna nada. — cobre FR-009, verificado por `git check-ignore -v .env .env.example`
-  - [ ] Dado `.gitattributes`, quando consulto `git check-attr eol package.json`, então retorna `eol: lf`. — cobre FR-007, verificado por `git check-attr eol package.json`
+  - [x] Dado o repositório limpo, quando rodo `pnpm install`, então conclui sem erro e gera `pnpm-lock.yaml`. — cobre FR-001, verificado por `pnpm install`
+  - [x] Dado `turbo.json`, quando leio as tasks, então contém `build`, `dev`, `lint`, `type-check` e `test` configuradas. — cobre FR-001, verificado por `node -e "console.log(Object.keys(require('./turbo.json').tasks))"` (a listagem real via `turbo run build --dry=json` exige workspaces e é verificada em T3 e T7)
+  - [x] Dado `.gitignore`, quando crio `.env` e `.env.example`, então `git check-ignore .env` retorna o caminho e `git check-ignore .env.example` não retorna nada. — cobre FR-009, verificado por `git check-ignore -v .env .env.example`
+  - [x] Dado `.gitattributes`, quando consulto `git check-attr eol package.json`, então retorna `eol: lf`. — cobre FR-007, verificado por `git check-attr eol package.json`
 
 ### Tarefa 2: packages/config
 - **Tipo:** chore
@@ -123,6 +123,7 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
   - [ ] Dado o BFF no ar, quando abro `GET /api/docs`, então responde `200` com a UI do Swagger. — cobre FR-003, verificado por `apps/bff/test/health.e2e-spec.ts`
   - [ ] Dado `PORT` ausente, quando subo o app, então escuta em 3401. — cobre FR-003, verificado por `pnpm --filter @votoaberto/bff dev` e `curl -s localhost:3401/api/v1/health`
   - [ ] Dado o app, quando rodo `pnpm --filter @votoaberto/bff type-check`, `lint`, `test` e `build`, então todos passam. — cobre FR-005, verificado por esses comandos
+  - [ ] Dado o workspace com o `bff`, quando rodo `pnpm exec turbo run build --dry=json`, então lista a tarefa `build` de `@votoaberto/bff`. — cobre FR-001, verificado por `pnpm exec turbo run build --dry=json`
 
 ### Tarefa 4: apps/web (Next.js)
 - **Tipo:** feature
@@ -221,6 +222,10 @@ Estado atual de `docs/context/guardrails.md` seção 1: **todos os comandos `(n�
 <!-- Preenchido pelo /hands-on: achados 🟢/💡 da review por onda e da final,
 no formato `- [onda N] arquivo:linha — texto`. Não é normativo. -->
 
+- [onda 1] `.env.example:5` — `BFF_URL` basta (web usa Server Components); acrescentar `NEXT_PUBLIC_BFF_URL` só se código de browser chamar o BFF
+- [onda 1] `turbo.json` — `test` depende de `^build`; `lint`/`type-check` dependem de `^lint`/`^type-check` (só têm efeito com dependências entre workspaces)
+- [onda 1] raiz — `turbo` pode recriar `AGENTS.md` em instalações futuras; não declarado na Spec, não commitar
+
 ---
 
 ## Emendas
@@ -230,6 +235,7 @@ Formato: `- YYYY-MM-DD — <o que mudou> — <por quê> — <quem>`.
 FR novo ou removido não é emenda: pare e escale ao humano. -->
 
 - 2026-10-12 — T2 passa a registrar `packages/config` (linha em `overview.md` e `docs/packages/config/README.md`), com arquivos e critério novos; premissa de `/init-package config` prévio removida — `/hands-on` iniciado sem o registro; humano escolheu registrar dentro da T2 — Roberto Nicoletti
+- 2026-10-12 — Critério 2 de T1 verifica as tasks lendo `turbo.json`; a listagem real via `turbo run build --dry=json` vira critério novo de T3 — `--dry` não lista tarefas sem workspaces; achado 🟡 da review da onda 1 — Roberto Nicoletti (via /hands-on)
 
 ---
 
