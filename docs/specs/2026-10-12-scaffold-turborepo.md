@@ -134,18 +134,18 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Cobre:** FR-004, FR-005, FR-006 (porta), CN-002
 - **Descrição:** App Next.js `@votoaberto/web` (App Router, TypeScript, Tailwind CSS, Server Components por padrão) consumindo `@votoaberto/config`. Scripts `dev` (`next dev -p 3400`), `build`, `start`, `lint`, `type-check`, `test`. Página inicial provisória com `<h1>` "VotoAberto" e a tagline do produto; `<html lang="pt-BR">`. Jest via `next/jest` + React Testing Library. Sem design tokens, Nocturne nem fetch ao BFF.
 - **Critérios de Aceite:**
-  - [ ] Dado a página inicial renderizada, quando consulto o DOM, então há um `h1` "VotoAberto" e a tagline "Entenda como o poder funciona no Brasil e veja, com dados oficiais, o que cada parlamentar fez.". — cobre FR-004, verificado por `apps/web/src/app/page.test.tsx`
-  - [ ] Dado o layout, quando inspeciono, então `<html>` tem `lang="pt-BR"`. — cobre FR-004, verificado por `apps/web/src/app/page.test.tsx` ou `grep -n 'lang="pt-BR"' apps/web/src/app/layout.tsx`
-  - [ ] Dado o app em dev, quando subo `pnpm --filter @votoaberto/web dev`, então `curl -s localhost:3400` retorna `200` com "VotoAberto". — cobre FR-004, verificado por esse comando
-  - [ ] Dado o app, quando rodo `pnpm --filter @votoaberto/web type-check`, `lint`, `test` e `build`, então todos passam. — cobre FR-005, verificado por esses comandos
-  - [ ] Dado `apps/web`, quando listo dependências, então não importa nada de `apps/bff`. — cobre CN-004, verificado por `grep -rn "apps/bff\|@votoaberto/bff" apps/web --include=*.ts --include=*.tsx --include=package.json` sem resultado
+  - [x] Dado a página inicial renderizada, quando consulto o DOM, então há um `h1` "VotoAberto" e a tagline "Entenda como o poder funciona no Brasil e veja, com dados oficiais, o que cada parlamentar fez.". — cobre FR-004, verificado por `apps/web/src/app/page.test.tsx`
+  - [x] Dado o layout, quando inspeciono, então `<html>` tem `lang="pt-BR"`. — cobre FR-004, verificado por `apps/web/src/app/page.test.tsx` ou `grep -n 'lang="pt-BR"' apps/web/src/app/layout.tsx`
+  - [x] Dado o app em dev, quando subo `pnpm --filter @votoaberto/web dev`, então `curl -s localhost:3400` retorna `200` com "VotoAberto". — cobre FR-004, verificado por esse comando
+  - [x] Dado o app, quando rodo `pnpm --filter @votoaberto/web type-check`, `lint`, `test` e `build`, então todos passam. — cobre FR-005, verificado por esses comandos
+  - [x] Dado `apps/web`, quando listo dependências, então não importa nada de `apps/bff`. — cobre CN-004, verificado por `grep -rn "apps/bff\|@votoaberto/bff" apps/web --include=*.ts --include=*.tsx --include=package.json` sem resultado
 
 ### Tarefa 5: Pre-commit (Husky + lint-staged)
 - **Tipo:** chore
 - **Agente:** backend
 - **Depende de:** T4
 - **Paralelizável com:** T6
-- **Arquivos:** `.husky/pre-commit`, `lint-staged.config.mjs`, `package.json`, `pnpm-lock.yaml`
+- **Arquivos:** `.husky/pre-commit`, `lint-staged.config.mjs`, `package.json`, `.gitignore`, `.prettierignore`, `pnpm-lock.yaml`
 - **Cobre:** FR-007
 - **Descrição:** Instala Husky e lint-staged; script `prepare` em `package.json`; `pre-commit` roda `lint-staged`, que aplica ESLint (`--fix`, `--max-warnings=0`) e Prettier (`--write`) nos arquivos staged de `apps/**` e `packages/**`. Hooks não podem ser pulados (`--no-verify` é proibido pelo guardrails).
 - **Critérios de Aceite:**
@@ -231,8 +231,12 @@ no formato `- [onda N] arquivo:linha — texto`. Não é normativo. -->
 - [onda 3] apps/bff/tsconfig.json:4-9 — `baseUrl: "./"` sem uso e `incremental` junto de `noEmit`; funciona, limpar quando conveniente
 - [onda 3] apps/bff/package.json — `ts-node` existe só para ler `jest.config.ts`; intencional
 - [onda 3] apps/bff/test/health.e2e-spec.ts — e2e não exercita um 5xx real via HTTP; cobertura do 5xx fica no spec unitário do filtro
-- [onda 3] apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts:45 — regex `at.*\.ts` frouxa; a checagem de `segredo|senha` cobre o vazamento relevante
+- [onda 3] apps/bff/src/presentation/filters/all-exceptions.filter.spec.ts:45 — regex de stack trace frouxa; a checagem de `segredo|senha` cobre o vazamento relevante
 - [onda 3] NestJS 11 (não 12, ESM-only): migrar ao 12 exige trocar o tsconfig nestjs para node20/nodenext ou tornar o BFF ESM; decisão humana (registrada em docs/apps/bff/context/decisions.md)
+- [onda 4] apps/web/next-env.d.ts — gerado por `next dev/build`, não ignorado; tratado na T5 (ver Emendas)
+- [onda 4] apps/web/.swc/ — gerado pelo build; adicionar `.swc/` ao `.gitignore` se passar a ter arquivos
+- [onda 4] apps/web — `lang="pt-BR"` verificado por grep/curl, sem teste automatizado; se quiser regressão, testar `RootLayout` com `renderToStaticMarkup`
+- [onda 4] raiz — `AGENTS.md` é recriado por `turbo`/`next dev`; não commitar
 
 ---
 
@@ -245,6 +249,7 @@ FR novo ou removido não é emenda: pare e escale ao humano. -->
 - 2026-10-12 — T2 passa a registrar `packages/config` (linha em `overview.md` e `docs/packages/config/README.md`), com arquivos e critério novos; premissa de `/init-package config` prévio removida — `/hands-on` iniciado sem o registro; humano escolheu registrar dentro da T2 — Roberto Nicoletti
 - 2026-10-12 — Critério 2 de T1 verifica as tasks lendo `turbo.json`; a listagem real via `turbo run build --dry=json` vira critério novo de T3 — `--dry` não lista tarefas sem workspaces; achado 🟡 da review da onda 1 — Roberto Nicoletti (via /hands-on)
 - 2026-10-12 — T3 passa a incluir `apps/bff/src/bootstrap.ts` (configureApp compartilhado por `main.ts` e e2e) e `docs/apps/bff/context/decisions.md` (decisões técnicas da T3) — achados 🟡 da review da onda 3 — Roberto Nicoletti (via /hands-on)
+- 2026-10-12 — T5 passa a incluir `.gitignore` e `.prettierignore` (ignorar `next-env.d.ts`, `AGENTS.md`, `.swc/`) e a instalar `prettier` na raiz (lint-staged precisa do binário) — achados da onda 4 — Roberto Nicoletti (via /hands-on)
 
 ---
 
