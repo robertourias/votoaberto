@@ -177,8 +177,8 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Cobre:** FR-001, FR-006, FR-008
 - **Descrição:** A partir de um clone limpo (ou `git clean` seguro de artefatos, sem tocar rastreados), roda toda a verificação da raiz e sobe os dois apps juntos. Qualquer falha volta para a tarefa dona do arquivo.
 - **Critérios de Aceite:**
-  - [ ] Dado a raiz, quando rodo `pnpm install --frozen-lockfile`, `pnpm type-check`, `pnpm lint`, `pnpm test` e `pnpm build`, então todos terminam com código 0. — cobre FR-001, verificado por esses comandos
-  - [ ] Dado a raiz, quando rodo `pnpm dev`, então `curl -s localhost:3401/api/v1/health` devolve `{"status":"ok"}` e `curl -s -o /dev/null -w "%{http_code}" localhost:3400` devolve `200`. — cobre FR-006, verificado por esses comandos
+  - [x] Dado a raiz, quando rodo `pnpm install --frozen-lockfile`, `pnpm type-check`, `pnpm lint`, `pnpm test` e `pnpm build`, então todos terminam com código 0. — cobre FR-001, verificado por esses comandos (após `git clean -fdX`; todos exit 0, turbo 2/2 tasks successful em cada)
+  - [x] Dado a raiz, quando rodo `pnpm dev`, então `curl -s localhost:3401/api/v1/health` devolve `{"status":"ok"}` e `curl -s -o /dev/null -w "%{http_code}" localhost:3400` devolve `200`. — cobre FR-006, verificado por esses comandos (health `{"status":"ok"}`, web 200 com "VotoAberto"; processos encerrados, portas livres)
   - [ ] Dado o PR aberto, quando o CI termina, então o check `verify` está verde. — cobre FR-008, verificado por `gh pr checks`
 
 ---
@@ -253,6 +253,7 @@ FR novo ou removido não é emenda: pare e escale ao humano. -->
 - 2026-10-12 — Critério 2 de T1 verifica as tasks lendo `turbo.json`; a listagem real via `turbo run build --dry=json` vira critério novo de T3 — `--dry` não lista tarefas sem workspaces; achado 🟡 da review da onda 1 — Roberto Nicoletti (via /hands-on)
 - 2026-10-12 — T3 passa a incluir `apps/bff/src/bootstrap.ts` (configureApp compartilhado por `main.ts` e e2e) e `docs/apps/bff/context/decisions.md` (decisões técnicas da T3) — achados 🟡 da review da onda 3 — Roberto Nicoletti (via /hands-on)
 - 2026-10-12 — T5 passa a incluir `.gitignore` e `.prettierignore` (ignorar `next-env.d.ts`, `AGENTS.md`, `.swc/`) e a instalar `prettier` na raiz (lint-staged precisa do binário) — achados da onda 4 — Roberto Nicoletti (via /hands-on)
+- 2026-10-12 — `pnpm test` (e o CI) passa a incluir o e2e do bff: script `test` de `apps/bff/package.json` roda unit + e2e; `turbo.json` (task `test`) sem `outputs: coverage/**` e `README.md` linha de CI corrigida — achado 🟡 e 🟢 da review final — Roberto Nicoletti (via /hands-on)
 
 ---
 

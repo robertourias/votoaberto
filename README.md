@@ -10,15 +10,15 @@ Site de consulta política que reúne num só lugar três coisas: **aprender** (
 
 Monorepo Turborepo (detalhe em [`docs/architecture/overview.md`](docs/architecture/overview.md)).
 
-| Camada | Tecnologia |
-| --- | --- |
-| Frontend | Next.js (App Router), ISR, guias em MDX |
-| Backend | NestJS: BFF + API pública de leitura; worker de ingestão |
-| Monorepo | Turborepo, TypeScript |
-| Banco | PostgreSQL (schema próprio, Postgres central da VPS) |
-| Arquivos | MinIO (S3-compatível) |
-| Hospedagem | VPS própria: Docker Compose, Traefik |
-| CI/CD | GitHub Actions (a configurar em POL-001) |
+| Camada     | Tecnologia                                               |
+| ---------- | -------------------------------------------------------- |
+| Frontend   | Next.js (App Router), ISR, guias em MDX                  |
+| Backend    | NestJS: BFF + API pública de leitura; worker de ingestão |
+| Monorepo   | Turborepo, TypeScript                                    |
+| Banco      | PostgreSQL (schema próprio, Postgres central da VPS)     |
+| Arquivos   | MinIO (S3-compatível)                                    |
+| Hospedagem | VPS própria: Docker Compose, Traefik                     |
+| CI/CD      | GitHub Actions (workflow `verify`)                       |
 
 ## Quick Start
 
@@ -39,13 +39,13 @@ Os comandos de verificação também estão registrados em [`docs/context/guardr
 
 Este repositório usa o harness Claude Code em [`.claude/`](.claude/README.md). Toda decisão de produto é rastreável a `docs/`; toda decisão de fluxo, a `.claude/`.
 
-| Comando | Para quê |
-| --- | --- |
-| `/spec [TASKXX]` | Gera Spec + plano técnico em ondas (`Status: review`) |
-| `/back [tarefa]` | Agente backend |
-| `/front [tarefa]` | Agente frontend |
-| `/review` | Revisão em dois estágios (funcional e qualidade) |
-| `/checkpoint` | Grava o resumo da sessão no log do projeto |
-| `/retomar` | Retoma o último histórico salvo |
+| Comando           | Para quê                                              |
+| ----------------- | ----------------------------------------------------- |
+| `/spec [TASKXX]`  | Gera Spec + plano técnico em ondas (`Status: review`) |
+| `/back [tarefa]`  | Agente backend                                        |
+| `/front [tarefa]` | Agente frontend                                       |
+| `/review`         | Revisão em dois estágios (funcional e qualidade)      |
+| `/checkpoint`     | Grava o resumo da sessão no log do projeto            |
+| `/retomar`        | Retoma o último histórico salvo                       |
 
 **Gate de Spec:** nada é implementado sem a Spec em `Status: approved`; só o humano aprova (`/approve`).
