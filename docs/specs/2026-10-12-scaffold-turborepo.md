@@ -149,9 +149,9 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Cobre:** FR-007
 - **Descrição:** Instala Husky e lint-staged; script `prepare` em `package.json`; `pre-commit` roda `lint-staged`, que aplica ESLint (`--fix`, `--max-warnings=0`) e Prettier (`--write`) nos arquivos staged de `apps/**` e `packages/**`. Hooks não podem ser pulados (`--no-verify` é proibido pelo guardrails).
 - **Critérios de Aceite:**
-  - [ ] Dado um arquivo `.ts` staged com erro de lint, quando tento `git commit`, então o commit é bloqueado e o erro aparece. — cobre FR-007, verificado por teste manual descrito na seção 8 (arquivo descartável, depois revertido)
-  - [ ] Dado um arquivo staged mal formatado, quando faço `git commit`, então o Prettier o reescreve. — cobre FR-007, verificado por teste manual descrito na seção 8
-  - [ ] Dado `lint-staged.config.mjs`, quando rodo `pnpm exec lint-staged --help`, então o binário resolve sem erro. — cobre FR-007, verificado por `pnpm exec lint-staged --help`
+  - [x] Dado um arquivo `.ts` staged com erro de lint, quando tento `git commit`, então o commit é bloqueado e o erro aparece. — cobre FR-007, verificado por teste manual descrito na seção 8 (arquivo descartável, depois revertido)
+  - [x] Dado um arquivo staged mal formatado, quando faço `git commit`, então o Prettier o reescreve. — cobre FR-007, verificado por teste manual descrito na seção 8
+  - [x] Dado `lint-staged.config.mjs`, quando rodo `pnpm exec lint-staged --help`, então o binário resolve sem erro. — cobre FR-007, verificado por `pnpm exec lint-staged --help`
 
 ### Tarefa 6: CI e documentação/guardrails
 - **Tipo:** chore
@@ -162,11 +162,11 @@ Estrutura do BFF segue a CN-001: código HTTP em `src/presentation/`; camadas `d
 - **Cobre:** FR-008, FR-009, CN-003
 - **Descrição:** Monta `verify.yml` a partir de `.claude/templates/ci/verify.yml`: pnpm (`pnpm/action-setup`, `cache: pnpm`, `pnpm install --frozen-lockfile`), `node-version-file: .nvmrc`, passos `type-check`, `lint`, `test` e `build` com os comandos reais, branch `main`. Atualiza o README (Quick Start com os comandos reais), `guardrails.md` seção 1 (remove `(não configurado)` e o aviso de projeto sem código), `settings.json` (`permissions.allow` com `pnpm type-check/lint/test/build/dev`), e a seção "Comandos de verificação" dos `decisions.md` de `web` e `bff`. `.github/workflows/` e `.claude/settings.json` estão em `ask`: o agente deve pedir confirmação antes de editar.
 - **Critérios de Aceite:**
-  - [ ] Dado `verify.yml`, quando valido a sintaxe, então é YAML válido e referencia `pnpm install --frozen-lockfile`, `pnpm type-check`, `pnpm lint`, `pnpm test` e `pnpm build`. — cobre FR-008, verificado por `node -e "require('node:fs').readFileSync('.github/workflows/verify.yml','utf8')"` e `grep -c "pnpm" .github/workflows/verify.yml`
+  - [x] Dado `verify.yml`, quando valido a sintaxe, então é YAML válido e referencia `pnpm install --frozen-lockfile`, `pnpm type-check`, `pnpm lint`, `pnpm test` e `pnpm build`. — cobre FR-008, verificado por `node -e "require('node:fs').readFileSync('.github/workflows/verify.yml','utf8')"` e `grep -c "pnpm" .github/workflows/verify.yml`
   - [ ] Dado um PR com a Spec implementada, quando o workflow `verify` roda no GitHub, então termina verde. — cobre FR-008, verificado por `gh run list --workflow=verify.yml` (ou pelo check do PR)
-  - [ ] Dado `guardrails.md`, quando leio a seção 1, então Type-check, Lint, Testes e Build têm comandos reais e nenhum `(não configurado)`. — cobre FR-009, verificado por `grep -c "não configurado" docs/context/guardrails.md` retornando 0 na seção 1
-  - [ ] Dado `settings.json`, quando valido, então é JSON válido e `permissions.allow` contém os comandos `pnpm` de verificação. — cobre FR-009, verificado por `node -e "JSON.parse(require('node:fs').readFileSync('.claude/settings.json','utf8'))"`
-  - [ ] Dado o README, quando leio o Quick Start, então os comandos listados existem como scripts em `package.json`. — cobre FR-009, verificado por `grep -n "pnpm" README.md` conferido contra `package.json`
+  - [x] Dado `guardrails.md`, quando leio a seção 1, então Type-check, Lint, Testes e Build têm comandos reais e nenhum `(não configurado)`. — cobre FR-009, verificado por `grep -c "não configurado" docs/context/guardrails.md` retornando 0 na seção 1
+  - [x] Dado `settings.json`, quando valido, então é JSON válido e `permissions.allow` contém os comandos `pnpm` de verificação. — cobre FR-009, verificado por `node -e "JSON.parse(require('node:fs').readFileSync('.claude/settings.json','utf8'))"`
+  - [x] Dado o README, quando leio o Quick Start, então os comandos listados existem como scripts em `package.json`. — cobre FR-009, verificado por `grep -n "pnpm" README.md` conferido contra `package.json`
 
 ### Tarefa 7: Validação integrada
 - **Tipo:** chore
@@ -237,6 +237,9 @@ no formato `- [onda N] arquivo:linha — texto`. Não é normativo. -->
 - [onda 4] apps/web/.swc/ — gerado pelo build; adicionar `.swc/` ao `.gitignore` se passar a ter arquivos
 - [onda 4] apps/web — `lang="pt-BR"` verificado por grep/curl, sem teste automatizado; se quiser regressão, testar `RootLayout` com `renderToStaticMarkup`
 - [onda 4] raiz — `AGENTS.md` é recriado por `turbo`/`next dev`; não commitar
+- [onda 5] README.md:21 — "GitHub Actions (a configurar em POL-001)" desatualizado; trocar por "GitHub Actions (workflow `verify`)"
+- [onda 5] lint-staged.config.mjs — workspace novo só entra no pre-commit com `eslint.config.mjs` próprio e registro em `eslintWorkspaces`; `packages/*` recebem só Prettier por ora
+- [onda 5] .github/workflows/verify.yml — critério "verify verde no PR" fecha na T7 (exige push e PR com confirmação humana)
 
 ---
 

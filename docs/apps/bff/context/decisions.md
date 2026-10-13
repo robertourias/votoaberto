@@ -25,10 +25,10 @@ Valem só dentro de `apps/bff`; complementam `docs/context/decisions.md`.
 - **`bootstrap.ts` / `configureApp(app)`:** concentra prefixo `api/v1`, filtro global e Swagger (`/api/docs`); usado por `main.ts` e pelo e2e, para o teste exercitar a mesma configuração de produção.
 
 ## Comandos de verificação
-- Test: (não configurado)
-- Type-check: (não configurado)
-- Lint: (não configurado)
-- Definir em POL-001 e refletir em `docs/context/guardrails.md`.
+- Test: `pnpm --filter @votoaberto/bff test`
+- E2E: `pnpm --filter @votoaberto/bff test:e2e`
+- Type-check: `pnpm --filter @votoaberto/bff type-check`
+- Lint: `pnpm --filter @votoaberto/bff lint`
 
 ## Packages internos consumidos
 - `packages/core`: normalização de votos, partidos e totais (TypeScript puro).

@@ -102,6 +102,10 @@
       "Bash(git stash:*)",
       "Bash(ls:*)",
       "Bash(rg:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm build:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)"
     ]

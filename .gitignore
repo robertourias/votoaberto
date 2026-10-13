@@ -8,3 +8,6 @@ coverage/
 # env: só o .env.example é versionado
 .env*
 !.env.example
+apps/web/next-env.d.ts
+AGENTS.md
+.swc/

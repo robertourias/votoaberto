@@ -22,7 +22,18 @@ Monorepo Turborepo (detalhe em [`docs/architecture/overview.md`](docs/architectu
 
 ## Quick Start
 
-Ainda não há código nem `package.json`: os comandos de install, dev, test e build serão definidos em POL-001 (scaffold do monorepo) e registrados em [`docs/context/guardrails.md`](docs/context/guardrails.md).
+Requer Node 22+ e pnpm (versão fixada em `packageManager`).
+
+```bash
+pnpm install       # instala as dependências do monorepo
+pnpm dev           # web em http://localhost:3400 e bff em http://localhost:3401
+pnpm build         # build de todos os apps/packages
+pnpm lint          # lint
+pnpm type-check    # verificação de tipos
+pnpm test          # testes
+```
+
+Os comandos de verificação também estão registrados em [`docs/context/guardrails.md`](docs/context/guardrails.md).
 
 ## Desenvolvimento com IA
 
